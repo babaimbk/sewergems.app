@@ -1,224 +1,133 @@
 import streamlit as st
-import pandas as pd
 
-# Configure the page for a side-by-side wide layout
-st.set_page_config(page_title="SewerGEMS Official Interactive Workbook", layout="wide")
+# Set up wide canvas layout for mobile/desktop responsiveness
+st.set_page_config(page_title="Bentley SewerGEMS Fundamentals", layout="wide")
 
-st.title("CivCom Engineers: SewerGEMS Masterclass App 🎓")
+st.title("Bentley Systems: SewerGEMS / SewerCAD Fundamentals 💧")
+st.markdown("*Interactive 16-Part Official Training Curriculum*")
 st.markdown("---")
 
-# 1. NAVIGATION MANAGEMENT (Divided into the 6 True Playlist Videos)
-st.sidebar.header("📁 Video Tutorial Modules")
-selected_video = st.sidebar.selectbox(
-    "Select Video Chapter:",
+# 1. NAVIGATION MANAGEMENT
+st.sidebar.header("📁 Interactive Seasons")
+season = st.sidebar.selectbox(
+    "Choose Training Season:",
     [
-        "1. Convert KMZ to DXF & Import Network",
-        "2. Assign Design Constraints",
-        "3. How to Put Sanitary Load or Demand",
-        "4. Insert Elevation Data & Simulate",
-        "5. Insert Peak Factor, Storm Allowance, & Infiltration",
-        "6. Calculate Sanitary Load using Thiessen Polygon"
+        "Module 1: Theory & Model Creation (Parts 1-3)",
+        "Module 2: Layouts & Gravity Sewers (Parts 4-6)",
+        "Module 3: Extended Period Simulations (Parts 7-9)",
+        "Module 4: Geospatial Tools & Design (Parts 13-16)"
     ]
 )
 
-# 2. SEWERGEMS VIDEO CODES WITH TIMESTAMPS (START & END SECONDS)
-# This cuts the video to show ONLY the relevant section for the topic
-if "1. Convert KMZ" in selected_video:
-    sub_topics = ["1.1 Geographic Alignment (KMZ)", "1.2 ModelBuilder Import Engine"]
-    base_url = "https://www.youtube.com/watch?v=5_6L1xDYeAg"
-    if sub_topics[0] in st.session_state.get('active_sub', ''):
-        video_link = f"{base_url}&start=0&end=300"       # First 5 minutes: KMZ to DXF
-    else:
-        video_link = f"{base_url}&start=300&end=664"     # Minute 5 to end: ModelBuilder Import
-        
-elif "2. Assign Design" in selected_video:
-    sub_topics = ["2.1 Velocity & Soil Cover Boundaries", "2.2 Pipe Capacity & Partly Full Ratios"]
-    base_url = "https://www.youtube.com/watch?v=PTTUBYpMjvo"
-    if sub_topics[0] in st.session_state.get('active_sub', ''):
-        video_link = f"{base_url}&start=0&end=250"       # Velocity & Cover
-    else:
-        video_link = f"{base_url}&start=250&end=448"     # Capacity & Slopes
-        
-elif "3. How to Put" in selected_video:
-    sub_topics = ["3.1 Unit Loads vs. Base Inflows", "3.2 Using the Sanitary Load Control Center"]
-    base_url = "https://www.youtube.com/watch?v=C5PZ0I_pFgE"
-    if sub_topics[0] in st.session_state.get('active_sub', ''):
-        video_link = f"{base_url}&start=0&end=280"       # Theory of Sanitary Loads
-    else:
-        video_link = f"{base_url}&start=280&end=643"     # Using the Control Center Spreadsheet
-        
-elif "4. Insert Elevation" in selected_video:
-    sub_topics = ["4.1 Ground Interpolation via Trex", "4.2 Computation & Engine Selection"]
-    base_url = "https://www.youtube.com/watch?v=hSPAjL9dLC0"
-    if sub_topics[0] in st.session_state.get('active_sub', ''):
-        video_link = f"{base_url}&start=0&end=150"       # Trex Setup
-    else:
-        video_link = f"{base_url}&start=150&end=218"     # Running simulation
-        
-elif "5. Insert Peak" in selected_video:
-    sub_topics = ["5.1 Extreme Flow Multiplying Formulas", "5.2 Infiltration & Storm Overflows"]
-    base_url = "https://www.youtube.com/watch?v=b4OolbA7b00"
-    if sub_topics[0] in st.session_state.get('active_sub', ''):
-        video_link = f"{base_url}&start=0&end=240"       # Peak factors & formulas
-    else:
-        video_link = f"{base_url}&start=240&end=495"     # Infiltration setup
-        
-elif "6. Calculate Sanitary" in selected_video:
-    sub_topics = ["6.1 Spatial Proportional Allocation Theory", "6.2 LoadBuilder Execution Wizard"]
-    base_url = "https://www.youtube.com/watch?v=rZRr1q94LJU"
-    if sub_topics[0] in st.session_state.get('active_sub', ''):
-        video_link = f"{base_url}&start=0&end=350"       # Thiessen Polygon Theory
-    else:
-        video_link = f"{base_url}&start=350&end=787"     # LoadBuilder Steps
-
-# Sidebar selection for sub-topic divisions
-active_sub = st.sidebar.radio("Sub-Topic Breakdown:", sub_topics, key='active_sub')
-
-# Re-evaluate link based on the finalized sidebar radio selection
-if "1.1" in active_sub: video_link = "https://www.youtube.com/watch?v=5_6L1xDYeAg&start=0&end=300"
-elif "1.2" in active_sub: video_link = "https://www.youtube.com/watch?v=5_6L1xDYeAg&start=300&end=664"
-elif "2.1" in active_sub: video_link = "https://www.youtube.com/watch?v=PTTUBYpMjvo&start=0&end=250"
-elif "2.2" in active_sub: video_link = "https://www.youtube.com/watch?v=PTTUBYpMjvo&start=250&end=448"
-elif "3.1" in active_sub: video_link = "https://www.youtube.com/watch?v=C5PZ0I_pFgE&start=0&end=280"
-elif "3.2" in active_sub: video_link = "https://www.youtube.com/watch?v=C5PZ0I_pFgE&start=280&end=643"
-elif "4.1" in active_sub: video_link = "https://www.youtube.com/watch?v=hSPAjL9dLC0&start=0&end=150"
-elif "4.2" in active_sub: video_link = "https://www.youtube.com/watch?v=hSPAjL9dLC0&start=150&end=218"
-elif "5.1" in active_sub: video_link = "https://www.youtube.com/watch?v=b4OolbA7b00&start=0&end=240"
-elif "5.2" in active_sub: video_link = "https://www.youtube.com/watch?v=b4OolbA7b00&start=240&end=495"
-elif "6.1" in active_sub: video_link = "https://www.youtube.com/watch?v=rZRr1q94LJU&start=0&end=350"
-elif "6.2" in active_sub: video_link = "https://www.youtube.com/watch?v=rZRr1q94LJU&start=350&end=787"
-
-# 3. INTERACTIVE LAYOUT DESIGN: DUAL CANVAS
-col_guide, col_video = st.columns([1.1, 1])
-
-with col_guide:
-    st.header(f"✏️ Learning Panel: {active_sub}")
+# 2. DYNAMIC SUB-TOPIC SELECTION & VIDEO ROUTING
+if season == "Module 1: Theory & Model Creation (Parts 1-3)":
+    sub_topics = [
+        "Part 1: Sewer System Design Fundamentals", 
+        "Part 2: Gravity Flow & Hydraulic Principles", 
+        "Part 3: Model Creation & Workspace Options"
+    ]
+    base_url = "https://youtu.be/w2sy4KhEe9Q" # Bentley Part 1 Official Video
     
-    # --- VIDEO 1 DETAILED DIALOG STEP-BY-STEPS ---
-    if "1.1 Geographic" in active_sub:
-        st.markdown("#### **Converting CAD Alignment Boundaries**")
-        st.markdown("""
-        To properly establish the geometric coordinates of your utility pipelines, you must export vector layers.
-        1. Open Google Earth and trace your system alignment.
-        2. Right-click your network file hierarchy $\rightarrow$ **Save Place As (.kmz)**.
-        3. Convert the `.kmz` map file to a vector `.dxf` layout via Global Mapper or AutoCAD Map 3D.
-        """)
-        st.checkbox("Step 1 Complete: Scaled DXF file exported with correct UTM coordinate zoning.")
-        
-    elif "1.2 ModelBuilder" in active_sub:
-        st.markdown("#### **Executing the Import Connection**")
-        st.markdown("""
-        * **Where to click:** Go to **Tools** $\rightarrow$ **ModelBuilder** $\rightarrow$ Click **New**.
-        * **Data Source:** Select `CAD Files (*.dxf)`. 
-        * **Field Mapping Matrix:** Map line geometries directly to **Conduits** and point coordinates to **Manholes**.
-        """)
-        st.checkbox("Click 'Build Model Now' to convert the CAD layout into an editable hydraulic schematic grid.")
+elif season == "Module 2: Layouts & Gravity Sewers (Parts 4-6)":
+    sub_topics = [
+        "Part 4: Drawing Layouts & Elements", 
+        "Part 5: Workshop 1 (Sanitary Gravity Sewers)", 
+        "Part 6: Scenarios & Alternatives"
+    ]
+    base_url = "https://youtu.be/aP4w4T6rIsk" # Bentley Part 5 Official Video
 
-    # --- VIDEO 2 DETAILED DIALOG STEP-BY-STEPS ---
-    elif "2.1 Velocity" in active_sub:
-        st.markdown("#### **Setting Velocity & Soil Protection Safety Rules**")
-        st.markdown("""
-        * **Velocity Inputs:** Set Minimum Velocity to `0.60 m/s` and Maximum Velocity to `3.00 m/s`.
-        * **Cover Depth Inputs:** Set Minimum Soil Cover depth parameter to `1.00 m`.
-        """)
-        st.markdown("*(Diagram: Sewer pipe profile layout showing minimum soil cover depth and flow velocity vector)*")
-        st.info("These physical bounds force the software to generate safe pipe sizing metrics during design tests.")
+elif season == "Module 3: Extended Period Simulations (Parts 7-9)":
+    sub_topics = [
+        "Part 7: Sanitary Loading Controls", 
+        "Part 8: Extended Period Simulations (EPS)", 
+        "Part 9: Pump & Wet Well Configuration"
+    ]
+    base_url = "https://youtu.be/ez-Vt6oBs4I" # Bentley Part 8 Official Video
 
-    elif "2.2 Pipe Capacity" in active_sub:
-        st.markdown("#### **Partly Full Constraints Calculation**")
-        st.markdown("""
-        * **Where to click:** Inside the **Design Constraints** window $\rightarrow$ click the **Partly Full** tab.
-        * Check the parameter box labeled *Specify Max (D/d)* and input `0.75`.
-        """)
-        
-        # Interactive Testing Simulator
-        st.markdown("---")
-        st.markdown("##### 🧪 Property Validation Field")
-        d = st.number_input("Measured Flow Water Depth 'd' (mm):", value=150)
-        D = st.number_input("Total Structural Pipe Diameter 'D' (mm):", value=200)
-        if D > 0:
-            current_ratio = d / D
-            st.metric("Computed Operating D/d Ratio:", f"{current_ratio:.2f}")
-            if current_ratio > 0.75:
-                st.error("Constraint Violated! Pipe exceeds 0.75 capacity threshold. Increase diameter in your model property editor.")
-            else:
-                st.success("Safe flow capacity margin.")
+elif season == "Module 4: Geospatial Tools & Design (Parts 13-16)":
+    sub_topics = [
+        "Part 13: Background Shapefiles", 
+        "Part 14: Workshop 4 (ModelBuilder & TRex)",
+        "Part 15: Automated Gravity Design"
+    ]
+    base_url = "https://youtu.be/7EP_z_-DMx4" # Bentley Part 14 Official Video
 
-    # --- VIDEO 3 DETAILED DIALOG STEP-BY-STEPS ---
-    elif "3.1 Unit Loads" in active_sub:
-        st.markdown("#### **Estimating Total Wastewater Contributions**")
-        st.markdown("Before opening the software data grid sheets, compute your target mass design inputs:")
-        
-        pop = st.number_input("Tributary Population Count (Persons):", value=2000)
-        per_cap = st.number_input("Average Per Capita Water Consumption (L/day):", value=140)
-        factor = st.slider("Wastewater Generation Return Factor:", 0.70, 0.90, 0.80)
-        
-        calculated_flow = (pop * per_cap * factor) / 86400
-        st.markdown(f"**Target Flow Value to Use:** `{calculated_flow:.4f} L/s`")
+active_part = st.sidebar.radio("Select Specific Lesson:", sub_topics)
 
-    elif "3.2 Using the" in active_sub:
-        st.markdown("#### **Global Population Allocation Entry**")
-        st.markdown("""
-        * **Where to click:** Go to **Tools** $\rightarrow$ **Sanitary Load Control Center**.
-        * Click the black drop-down arrow next to the **Add** button $\rightarrow$ click **Initialize Loads for All Nodes**.
-        * This generates a global spreadsheet mapping columns for every manhole node in the collection network. Paste your calculated $L/s$ demand values into the active **Flow** column cells.
-        """)
+# Assign Specific Start Times based on the topic selected
+start_sec = 0
+if "Part 1" in active_part: start_sec = 60
+elif "Part 2" in active_part: start_sec = 350
+elif "Part 3" in active_part: start_sec = 600
+elif "Part 4" in active_part: start_sec = 45
+elif "Part 5" in active_part: start_sec = 180
+elif "Part 6" in active_part: start_sec = 400
+elif "Part 7" in active_part: start_sec = 30
+elif "Part 8" in active_part: start_sec = 210
+elif "Part 9" in active_part: start_sec = 450
+elif "Part 13" in active_part: start_sec = 50
+elif "Part 14" in active_part: start_sec = 240
+elif "Part 15" in active_part: start_sec = 550
 
-    # --- VIDEO 4 DETAILED DIALOG STEP-BY-STEPS ---
-    elif "4.1 Ground" in active_sub:
-        st.markdown("#### **Automating Elevation Extractions (Trex Tool)**")
-        st.markdown("""
-        * **Where to click:** Go to **Tools** $\rightarrow$ **Trex**.
-        * **Data Source File Type:** Select your CAD Contour map or Raster `.dem` file.
-        * Set your spatial profile elevation field parameter mapping to `Z` or `Elevation` and select `Meters` as the tracking unit.
-        """)
-        st.checkbox("Verify that all node elements successfully inherit ground elevations via the Trex assignment summary table.")
+# 3. INTERACTIVE LAYOUT DESIGN: EXACTLY AS REQUESTED
+col_left, col_right = st.columns([1.1, 1])
 
-    elif "4.2 Computation" in active_sub:
-        st.markdown("#### **Configuring and Running the Simulation Engine**")
-        st.markdown("""
-        * **Where to click:** Go to **Analysis** $\rightarrow$ **Calculation Options**. Double-click your active profile.
-        * For sanitary sewer collection analysis, set the **Hydraulic Engine Type Solver** to `GVF-Convex (SewerCAD Engine)`.
-        * Click the green **Compute** chevron icon on your main system ribbon tool set to execute routing algorithms.
-        """)
+with col_left:
+    st.header(f"✏️ Guide: {active_part}")
+    
+    # --- MODULE 1 ---
+    if "Part 1" in active_part:
+        st.markdown("#### **Sewer System Fundamentals**")
+        st.markdown("Bentley defines two primary network types in this platform: Sanitary Sewers (wastewater) and Storm Sewers (runoff).")
+    elif "Part 2" in active_part:
+        st.markdown("#### **Hydraulic Principles**")
+        st.markdown("In Bentley software, Manning's 'n' is the primary roughness coefficient used to determine gravity flow velocities. Understanding gravity flow versus pressure profiles is critical.")
+    elif "Part 3" in active_part:
+        st.markdown("#### **Model Creation Checklists**")
+        st.checkbox("Create New Project & Set Working Directory.")
+        st.checkbox("Go to Tools -> Options -> Set Units (System International / US Customary).")
+        st.checkbox("Set Drawing Scale (Scaled vs. Schematic).")
 
-    # --- VIDEO 5 DETAILED DIALOG STEP-BY-STEPS ---
-    elif "5.1 Extreme" in active_sub:
-        st.markdown("#### **Configuring Flow Peaking Equations**")
-        st.markdown("""
-        * **Where to click:** Navigate to **Components** $\rightarrow$ **Extreme Flows**.
-        * Right-click the folder directory item $\rightarrow$ Select **New** $\rightarrow$ **Extreme Flow Setup**.
-        * Change your tracking method option parameter from Table to **Equation** and choose the **Harmon Formula** standard.
-        """)
-        st.latex(r"PF = 1 + \frac{14}{4 + \sqrt{Population_{(thousands)}}}")
+    # --- MODULE 2 ---
+    elif "Part 4" in active_part:
+        st.markdown("#### **Drawing Layouts**")
+        st.markdown("When dropping elements, ensure you draw from upstream to downstream. Right-click during layout to quickly switch between Manholes, Catch Basins, and Outfalls.")
+    elif "Part 5" in active_part:
+        st.markdown("#### **Sanitary Gravity Sewers Workshop**")
+        st.markdown("This workshop introduces the GVF-Convex (SewerCAD) solver. You will configure initial base scenarios and layout pipe networks.")
+        st.checkbox("Lay out the outfall and connecting conduits.")
+        st.checkbox("Establish minimum cover and design constraints.")
+    elif "Part 6" in active_part:
+        st.markdown("#### **Scenarios & Alternatives**")
+        st.markdown("Bentley's unique architecture uses 'Scenarios' (the master folder) and 'Alternatives' (the specific data sets like physical properties or demands). You can nest Base Scenarios into Child Scenarios to compare designs.")
 
-    elif "5.2 Infiltration" in active_sub:
-        st.markdown("#### **Adding Groundwater Inflows & Allowances**")
-        st.markdown("""
-        * **Where to click:** Select your conduits $\rightarrow$ Navigate to your **Property Editor Dashboard**.
-        * Locate the section grouping named **Environmental/Infiltration Loading Options**.
-        * Input constant baseline numbers into the **Infiltration Flow Rate** data slots to represent groundwater pipe migration safety margins.
-        """)
+    # --- MODULE 3 ---
+    elif "Part 7" in active_part:
+        st.markdown("#### **Sanitary Loading**")
+        st.markdown("Input your dry-weather and wet-weather loading allocations. Use the Sanitary Load Control center to distribute demands across your system nodes.")
+    elif "Part 8" in active_part:
+        st.markdown("#### **Extended Period Simulations (EPS)**")
+        st.markdown("Unlike Steady-State (a single snapshot in time), EPS runs the model over 24+ hours to show how wet wells fill, pumps cycle on/off, and diurnal patterns peak.")
+    elif "Part 9" in active_part:
+        st.markdown("#### **Pumps and Wet Wells**")
+        st.markdown("Gravity stops working when elevation rises. You must insert a **Wet Well**, connect it to a **Pump**, and push the water through a **Pressure Pipe** (Force Main) to a downstream gravity discharge manhole.")
 
-    # --- VIDEO 6 DETAILED DIALOG STEP-BY-STEPS ---
-    elif "6.1 Spatial" in active_sub:
-        st.markdown("#### **Thiessen Polygon Service Proximity Mapping**")
-        st.markdown("""
-        * **Concept:** When manhole loading configurations vary widely due to changing urban footprints, geometric polygons divide the service map.
-        * Any property area boundary fall line within a specific node's polygon territory sends its calculated residential capacity entirely into that single target manhole structure.
-        """)
-        st.markdown("*(Diagram: Thiessen polygon network geometric layout showing service areas built around central manhole nodes)*")
+    # --- MODULE 4 ---
+    elif "Part 13" in active_part:
+        st.markdown("#### **Geospatial Backgrounds**")
+        st.markdown("Attach DXF or Shapefile backgrounds to trace existing city infrastructure accurately in the 'Scaled' drawing mode.")
+    elif "Part 14" in active_part:
+        st.markdown("#### **Workshop 4 (ModelBuilder & TRex)**")
+        st.markdown("This is the core of modern modeling. You will take raw shapefiles and convert them into a mathematically sound hydraulic grid.")
+        st.checkbox("Run **ModelBuilder** to import pipe/manhole shapefiles.")
+        st.checkbox("Run **TRex** using the DEM file to assign ground elevations.")
+        st.checkbox("Run **LoadBuilder** to distribute polygon sanitary loads.")
+    elif "Part 15" in active_part:
+        st.markdown("#### **Automated Gravity Design**")
+        st.markdown("To let SewerCAD/SewerGEMS size the pipes for you, go to Calculation Options and change the Calculation Type from 'Analysis' to 'Design'. The engine will automatically size pipes from the Conduit Catalog.")
 
-    elif "6.2 LoadBuilder" in active_sub:
-        st.markdown("#### **Executing the Spatial Flow Allocation Wizard**")
-        st.markdown("""
-        * **Where to click:** Navigate to **Tools** $\rightarrow$ **LoadBuilder** $\rightarrow$ Click **New**.
-        * **Method Type Directory Selection:** Choose **Area Load Data** $\rightarrow$ Select **Proportional Distribution by Area**.
-        * Set the **Node Layer** field menu value to your current model's *Manholes*. Set the **Service Area Boundary Layer** input to your prepared system shapefile zone. Click **Finish**.
-        """)
-
-# Right Column plays the exact cut segment of the video
-with col_video:
-    st.header("📺 Trimmed Tutorial Segment")
-    st.markdown("The clip below is automatically cut to show *only* the current topic:")
-    st.video(video_link)
+with col_right:
+    st.header("📺 Synced Video Lesson")
+    st.markdown(f"*(Playing {active_part})*")
+    # Streamlit natively handles starting the video at the exact second required!
+    st.video(base_url, start_time=start_sec)

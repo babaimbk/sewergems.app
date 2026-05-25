@@ -21,29 +21,72 @@ selected_video = st.sidebar.selectbox(
     ]
 )
 
-# 2. GENUINE SEWERGEMS VIDEO CODES
-# Replacing the placeholder links with real CivCom Engineers video URLs
+# 2. SEWERGEMS VIDEO CODES WITH TIMESTAMPS (START & END SECONDS)
+# This cuts the video to show ONLY the relevant section for the topic
 if "1. Convert KMZ" in selected_video:
     sub_topics = ["1.1 Geographic Alignment (KMZ)", "1.2 ModelBuilder Import Engine"]
-    video_link = "https://www.youtube.com/watch?v=Fst8bE_v_fU" # Real Video 1
+    base_url = "https://www.youtube.com/watch?v=5_6L1xDYeAg"
+    if sub_topics[0] in st.session_state.get('active_sub', ''):
+        video_link = f"{base_url}&start=0&end=300"       # First 5 minutes: KMZ to DXF
+    else:
+        video_link = f"{base_url}&start=300&end=664"     # Minute 5 to end: ModelBuilder Import
+        
 elif "2. Assign Design" in selected_video:
     sub_topics = ["2.1 Velocity & Soil Cover Boundaries", "2.2 Pipe Capacity & Partly Full Ratios"]
-    video_link = "https://www.youtube.com/watch?v=R98y9Cq86C8" # Real Video 2
+    base_url = "https://www.youtube.com/watch?v=PTTUBYpMjvo"
+    if sub_topics[0] in st.session_state.get('active_sub', ''):
+        video_link = f"{base_url}&start=0&end=250"       # Velocity & Cover
+    else:
+        video_link = f"{base_url}&start=250&end=448"     # Capacity & Slopes
+        
 elif "3. How to Put" in selected_video:
     sub_topics = ["3.1 Unit Loads vs. Base Inflows", "3.2 Using the Sanitary Load Control Center"]
-    video_link = "https://www.youtube.com/watch?v=C5PZ0I_pFgE" # Real Video 3
+    base_url = "https://www.youtube.com/watch?v=C5PZ0I_pFgE"
+    if sub_topics[0] in st.session_state.get('active_sub', ''):
+        video_link = f"{base_url}&start=0&end=280"       # Theory of Sanitary Loads
+    else:
+        video_link = f"{base_url}&start=280&end=643"     # Using the Control Center Spreadsheet
+        
 elif "4. Insert Elevation" in selected_video:
     sub_topics = ["4.1 Ground Interpolation via Trex", "4.2 Computation & Engine Selection"]
-    video_link = "https://www.youtube.com/watch?v=W53Y6C9D86k" # Real Video 4
+    base_url = "https://www.youtube.com/watch?v=hSPAjL9dLC0"
+    if sub_topics[0] in st.session_state.get('active_sub', ''):
+        video_link = f"{base_url}&start=0&end=150"       # Trex Setup
+    else:
+        video_link = f"{base_url}&start=150&end=218"     # Running simulation
+        
 elif "5. Insert Peak" in selected_video:
     sub_topics = ["5.1 Extreme Flow Multiplying Formulas", "5.2 Infiltration & Storm Overflows"]
-    video_link = "https://www.youtube.com/watch?v=68E6XgL_O8M" # Real Video 5
+    base_url = "https://www.youtube.com/watch?v=b4OolbA7b00"
+    if sub_topics[0] in st.session_state.get('active_sub', ''):
+        video_link = f"{base_url}&start=0&end=240"       # Peak factors & formulas
+    else:
+        video_link = f"{base_url}&start=240&end=495"     # Infiltration setup
+        
 elif "6. Calculate Sanitary" in selected_video:
     sub_topics = ["6.1 Spatial Proportional Allocation Theory", "6.2 LoadBuilder Execution Wizard"]
-    video_link = "https://www.youtube.com/watch?v=b4OolbA7b00" # Real Video 6
+    base_url = "https://www.youtube.com/watch?v=rZRr1q94LJU"
+    if sub_topics[0] in st.session_state.get('active_sub', ''):
+        video_link = f"{base_url}&start=0&end=350"       # Thiessen Polygon Theory
+    else:
+        video_link = f"{base_url}&start=350&end=787"     # LoadBuilder Steps
 
 # Sidebar selection for sub-topic divisions
-active_sub = st.sidebar.radio("Sub-Topic Breakdown:", sub_topics)
+active_sub = st.sidebar.radio("Sub-Topic Breakdown:", sub_topics, key='active_sub')
+
+# Re-evaluate link based on the finalized sidebar radio selection
+if "1.1" in active_sub: video_link = "https://www.youtube.com/watch?v=5_6L1xDYeAg&start=0&end=300"
+elif "1.2" in active_sub: video_link = "https://www.youtube.com/watch?v=5_6L1xDYeAg&start=300&end=664"
+elif "2.1" in active_sub: video_link = "https://www.youtube.com/watch?v=PTTUBYpMjvo&start=0&end=250"
+elif "2.2" in active_sub: video_link = "https://www.youtube.com/watch?v=PTTUBYpMjvo&start=250&end=448"
+elif "3.1" in active_sub: video_link = "https://www.youtube.com/watch?v=C5PZ0I_pFgE&start=0&end=280"
+elif "3.2" in active_sub: video_link = "https://www.youtube.com/watch?v=C5PZ0I_pFgE&start=280&end=643"
+elif "4.1" in active_sub: video_link = "https://www.youtube.com/watch?v=hSPAjL9dLC0&start=0&end=150"
+elif "4.2" in active_sub: video_link = "https://www.youtube.com/watch?v=hSPAjL9dLC0&start=150&end=218"
+elif "5.1" in active_sub: video_link = "https://www.youtube.com/watch?v=b4OolbA7b00&start=0&end=240"
+elif "5.2" in active_sub: video_link = "https://www.youtube.com/watch?v=b4OolbA7b00&start=240&end=495"
+elif "6.1" in active_sub: video_link = "https://www.youtube.com/watch?v=rZRr1q94LJU&start=0&end=350"
+elif "6.2" in active_sub: video_link = "https://www.youtube.com/watch?v=rZRr1q94LJU&start=350&end=787"
 
 # 3. INTERACTIVE LAYOUT DESIGN: DUAL CANVAS
 col_guide, col_video = st.columns([1.1, 1])
@@ -56,36 +99,36 @@ with col_guide:
         st.markdown("#### **Converting CAD Alignment Boundaries**")
         st.markdown("""
         To properly establish the geometric coordinates of your utility pipelines, you must export vector layers.
-        1. Open Google Earth and trace your system alignment[cite: 6].
-        2. Right-click your network file hierarchy $\rightarrow$ **Save Place As (.kmz)**[cite: 6].
-        3. Convert the `.kmz` map file to a vector `.dxf` layout via Global Mapper or AutoCAD Map 3D[cite: 6].
+        1. Open Google Earth and trace your system alignment.
+        2. Right-click your network file hierarchy $\rightarrow$ **Save Place As (.kmz)**.
+        3. Convert the `.kmz` map file to a vector `.dxf` layout via Global Mapper or AutoCAD Map 3D.
         """)
-        st.checkbox("Step 1 Complete: Scaled DXF file exported with correct UTM coordinate zoning[cite: 6].")
+        st.checkbox("Step 1 Complete: Scaled DXF file exported with correct UTM coordinate zoning.")
         
     elif "1.2 ModelBuilder" in active_sub:
         st.markdown("#### **Executing the Import Connection**")
         st.markdown("""
-        * **Where to click:** Go to **Tools** $\rightarrow$ **ModelBuilder** $\rightarrow$ Click **New**[cite: 4].
-        * **Data Source:** Select `CAD Files (*.dxf)`[cite: 6]. 
-        * **Field Mapping Matrix:** Map line geometries directly to **Conduits** and point coordinates to **Manholes**[cite: 4].
+        * **Where to click:** Go to **Tools** $\rightarrow$ **ModelBuilder** $\rightarrow$ Click **New**.
+        * **Data Source:** Select `CAD Files (*.dxf)`. 
+        * **Field Mapping Matrix:** Map line geometries directly to **Conduits** and point coordinates to **Manholes**.
         """)
-        st.checkbox("Click 'Build Model Now' to convert the CAD layout into an editable hydraulic schematic grid[cite: 4].")
+        st.checkbox("Click 'Build Model Now' to convert the CAD layout into an editable hydraulic schematic grid.")
 
     # --- VIDEO 2 DETAILED DIALOG STEP-BY-STEPS ---
     elif "2.1 Velocity" in active_sub:
         st.markdown("#### **Setting Velocity & Soil Protection Safety Rules**")
         st.markdown("""
-        * **Velocity Inputs:** Set Minimum Velocity to `0.60 m/s` and Maximum Velocity to `3.00 m/s`[cite: 6].
-        * **Cover Depth Inputs:** Set Minimum Soil Cover depth parameter to `1.00 m`[cite: 6].
+        * **Velocity Inputs:** Set Minimum Velocity to `0.60 m/s` and Maximum Velocity to `3.00 m/s`.
+        * **Cover Depth Inputs:** Set Minimum Soil Cover depth parameter to `1.00 m`.
         """)
         st.markdown("*(Diagram: Sewer pipe profile layout showing minimum soil cover depth and flow velocity vector)*")
-        st.info("These physical bounds force the software to generate safe pipe sizing metrics during design tests[cite: 6].")
+        st.info("These physical bounds force the software to generate safe pipe sizing metrics during design tests.")
 
     elif "2.2 Pipe Capacity" in active_sub:
         st.markdown("#### **Partly Full Constraints Calculation**")
         st.markdown("""
-        * **Where to click:** Inside the **Design Constraints** window $\rightarrow$ click the **Partly Full** tab[cite: 6].
-        * Check the parameter box labeled *Specify Max (D/d)* and input `0.75`[cite: 6].
+        * **Where to click:** Inside the **Design Constraints** window $\rightarrow$ click the **Partly Full** tab.
+        * Check the parameter box labeled *Specify Max (D/d)* and input `0.75`.
         """)
         
         # Interactive Testing Simulator
@@ -104,7 +147,7 @@ with col_guide:
     # --- VIDEO 3 DETAILED DIALOG STEP-BY-STEPS ---
     elif "3.1 Unit Loads" in active_sub:
         st.markdown("#### **Estimating Total Wastewater Contributions**")
-        st.markdown("Before opening the software data grid sheets, compute your target mass design inputs[cite: 7]:")
+        st.markdown("Before opening the software data grid sheets, compute your target mass design inputs:")
         
         pop = st.number_input("Tributary Population Count (Persons):", value=2000)
         per_cap = st.number_input("Average Per Capita Water Consumption (L/day):", value=140)
@@ -116,66 +159,66 @@ with col_guide:
     elif "3.2 Using the" in active_sub:
         st.markdown("#### **Global Population Allocation Entry**")
         st.markdown("""
-        * **Where to click:** Go to **Tools** $\rightarrow$ **Sanitary Load Control Center**[cite: 7].
-        * Click the black drop-down arrow next to the **Add** button $\rightarrow$ click **Initialize Loads for All Nodes**[cite: 7].
-        * This generates a global spreadsheet mapping columns for every manhole node in the collection network[cite: 7]. Paste your calculated $L/s$ demand values into the active **Flow** column cells[cite: 7].
+        * **Where to click:** Go to **Tools** $\rightarrow$ **Sanitary Load Control Center**.
+        * Click the black drop-down arrow next to the **Add** button $\rightarrow$ click **Initialize Loads for All Nodes**.
+        * This generates a global spreadsheet mapping columns for every manhole node in the collection network. Paste your calculated $L/s$ demand values into the active **Flow** column cells.
         """)
 
     # --- VIDEO 4 DETAILED DIALOG STEP-BY-STEPS ---
     elif "4.1 Ground" in active_sub:
         st.markdown("#### **Automating Elevation Extractions (Trex Tool)**")
         st.markdown("""
-        * **Where to click:** Go to **Tools** $\rightarrow$ **Trex**[cite: 7].
-        * **Data Source File Type:** Select your CAD Contour map or Raster `.dem` file[cite: 4, 7].
-        * Set your spatial profile elevation field parameter mapping to `Z` or `Elevation` and select `Meters` as the tracking unit[cite: 7].
+        * **Where to click:** Go to **Tools** $\rightarrow$ **Trex**.
+        * **Data Source File Type:** Select your CAD Contour map or Raster `.dem` file.
+        * Set your spatial profile elevation field parameter mapping to `Z` or `Elevation` and select `Meters` as the tracking unit.
         """)
-        st.checkbox("Verify that all node elements successfully inherit ground elevations via the Trex assignment summary table[cite: 7].")
+        st.checkbox("Verify that all node elements successfully inherit ground elevations via the Trex assignment summary table.")
 
     elif "4.2 Computation" in active_sub:
         st.markdown("#### **Configuring and Running the Simulation Engine**")
         st.markdown("""
-        * **Where to click:** Go to **Analysis** $\rightarrow$ **Calculation Options**[cite: 7]. Double-click your active profile[cite: 7].
+        * **Where to click:** Go to **Analysis** $\rightarrow$ **Calculation Options**. Double-click your active profile.
         * For sanitary sewer collection analysis, set the **Hydraulic Engine Type Solver** to `GVF-Convex (SewerCAD Engine)`.
-        * Click the green **Compute** chevron icon on your main system ribbon tool set to execute routing algorithms[cite: 7].
+        * Click the green **Compute** chevron icon on your main system ribbon tool set to execute routing algorithms.
         """)
 
     # --- VIDEO 5 DETAILED DIALOG STEP-BY-STEPS ---
     elif "5.1 Extreme" in active_sub:
         st.markdown("#### **Configuring Flow Peaking Equations**")
         st.markdown("""
-        * **Where to click:** Navigate to **Components** $\rightarrow$ **Extreme Flows**[cite: 7].
-        * Right-click the folder directory item $\rightarrow$ Select **New** $\rightarrow$ **Extreme Flow Setup**[cite: 7].
-        * Change your tracking method option parameter from Table to **Equation** and choose the **Harmon Formula** standard[cite: 7].
+        * **Where to click:** Navigate to **Components** $\rightarrow$ **Extreme Flows**.
+        * Right-click the folder directory item $\rightarrow$ Select **New** $\rightarrow$ **Extreme Flow Setup**.
+        * Change your tracking method option parameter from Table to **Equation** and choose the **Harmon Formula** standard.
         """)
         st.latex(r"PF = 1 + \frac{14}{4 + \sqrt{Population_{(thousands)}}}")
 
     elif "5.2 Infiltration" in active_sub:
         st.markdown("#### **Adding Groundwater Inflows & Allowances**")
         st.markdown("""
-        * **Where to click:** Select your conduits $\rightarrow$ Navigate to your **Property Editor Dashboard**[cite: 7].
-        * Locate the section grouping named **Environmental/Infiltration Loading Options**[cite: 7].
-        * Input constant baseline numbers into the **Infiltration Flow Rate** data slots to represent groundwater pipe migration safety margins[cite: 7].
+        * **Where to click:** Select your conduits $\rightarrow$ Navigate to your **Property Editor Dashboard**.
+        * Locate the section grouping named **Environmental/Infiltration Loading Options**.
+        * Input constant baseline numbers into the **Infiltration Flow Rate** data slots to represent groundwater pipe migration safety margins.
         """)
 
     # --- VIDEO 6 DETAILED DIALOG STEP-BY-STEPS ---
     elif "6.1 Spatial" in active_sub:
         st.markdown("#### **Thiessen Polygon Service Proximity Mapping**")
         st.markdown("""
-        * **Concept:** When manhole loading configurations vary widely due to changing urban footprints, geometric polygons divide the service map[cite: 7].
-        * Any property area boundary fall line within a specific node's polygon territory sends its calculated residential capacity entirely into that single target manhole structure[cite: 7].
+        * **Concept:** When manhole loading configurations vary widely due to changing urban footprints, geometric polygons divide the service map.
+        * Any property area boundary fall line within a specific node's polygon territory sends its calculated residential capacity entirely into that single target manhole structure.
         """)
         st.markdown("*(Diagram: Thiessen polygon network geometric layout showing service areas built around central manhole nodes)*")
 
     elif "6.2 LoadBuilder" in active_sub:
         st.markdown("#### **Executing the Spatial Flow Allocation Wizard**")
         st.markdown("""
-        * **Where to click:** Navigate to **Tools** $\rightarrow$ **LoadBuilder** $\rightarrow$ Click **New**[cite: 7].
-        * **Method Type Directory Selection:** Choose **Area Load Data** $\rightarrow$ Select **Proportional Distribution by Area**[cite: 7].
-        * Set the **Node Layer** field menu value to your current model's *Manholes*[cite: 7]. Set the **Service Area Boundary Layer** input to your prepared system shapefile zone[cite: 7]. Click **Finish**[cite: 7].
+        * **Where to click:** Navigate to **Tools** $\rightarrow$ **LoadBuilder** $\rightarrow$ Click **New**.
+        * **Method Type Directory Selection:** Choose **Area Load Data** $\rightarrow$ Select **Proportional Distribution by Area**.
+        * Set the **Node Layer** field menu value to your current model's *Manholes*. Set the **Service Area Boundary Layer** input to your prepared system shapefile zone. Click **Finish**.
         """)
 
-# Right Column plays the exact synchronized video lesson snippet
+# Right Column plays the exact cut segment of the video
 with col_video:
-    st.header("📺 Sync Video Demonstration")
-    st.markdown("Watch the corresponding CivCom Engineers software operation segment below:")
+    st.header("📺 Trimmed Tutorial Segment")
+    st.markdown("The clip below is automatically cut to show *only* the current topic:")
     st.video(video_link)

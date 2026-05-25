@@ -1,129 +1,184 @@
 import streamlit as st
 import pandas as pd
 
-# Set up wide canvas layout for mobile/desktop responsiveness
-st.set_page_config(page_title="SewerGEMS Interactive Video Workbook", layout="wide")
+# Configure the page for a side-by-side wide layout
+st.set_set_config(page_title="SewerGEMS Official Interactive Workbook", layout="wide")
 
-# App Header
-st.title("SewerGEMS Interactive Video Workbook 🎬")
+st.title("CivCom Engineers: SewerGEMS Masterclass App 🎓")
 st.markdown("---")
 
-# 1. SIDEBAR: Course Navigation
-st.sidebar.header("📁 Video Course Modules")
-module = st.sidebar.selectbox(
-    "Choose Video Lesson:",
+# 1. NAVIGATION MANAGEMENT (Divided into the 6 True Playlist Videos)
+st.sidebar.header("📁 Video Tutorial Modules")
+selected_video = st.sidebar.selectbox(
+    "Select Video Chapter:",
     [
-        "1. KMZ to DXF & ModelBuilder Import",
-        "2. Design Constraints Configuration",
-        "3. Sanitary Load & Demand Input",
-        "4. Elevation Data (Trex) & Simulation",
-        "5. Peak Factors & Environmental Modifiers",
-        "6. Thiessen Polygon Area Loading"
+        "1. Convert KMZ to DXF & Import Network",
+        "2. Assign Design Constraints",
+        "3. How to Put Sanitary Load or Demand",
+        "4. Insert Elevation Data & Simulate",
+        "5. Insert Peak Factor, Storm Allowance, & Infiltration",
+        "6. Calculate Sanitary Load using Thiessen Polygon"
     ]
 )
 
-# Dynamic sub-topic switching and video link assignment based on choice
-# Note: Using standard instructional placeholders for video segment URLs
-if "1. KMZ to DXF" in module:
-    sub_topic = st.sidebar.radio("Go to Sub-Topic:", ["1.1 Concept: KMZ vs DXF", "1.2 Guide: Using ModelBuilder"])
-    video_url = "https://www.youtube.com/watch?v=dQw4w9WgXcQ&t=0s"  # Starts at 0m 0s
-elif "2. Design Constraints" in module:
-    sub_topic = st.sidebar.radio("Go to Sub-Topic:", ["2.1 Concept: Velocity & Cover", "2.2 Guide: Capacity (D/d) & Slopes"])
-    video_url = "https://www.youtube.com/watch?v=dQw4w9WgXcQ&t=95s"  # Starts at 1m 35s
-elif "3. Sanitary Load" in module:
-    sub_topic = st.sidebar.radio("Go to Sub-Topic:", ["3.1 Concept: Sanitary Load Types", "3.2 Guide: Load Control Center"])
-    video_url = "https://www.youtube.com/watch?v=dQw4w9WgXcQ&t=210s" # Starts at 3m 30s
-elif "4. Elevation Data" in module:
-    sub_topic = st.sidebar.radio("Go to Sub-Topic:", ["4.1 Concept: Elevation Basics", "4.2 Guide: Using the Trex Tool"])
-    video_url = "https://www.youtube.com/watch?v=dQw4w9WgXcQ&t=315s" # Starts at 5m 15s
-elif "5. Peak Factors" in module:
-    sub_topic = st.sidebar.radio("Go to Sub-Topic:", ["5.1 Concept: Peak Modifiers", "5.2 Interactive: Flow Calculator"])
-    video_url = "https://www.youtube.com/watch?v=dQw4w9WgXcQ&t=440s" # Starts at 7m 20s
-elif "6. Thiessen Polygon" in module:
-    sub_topic = st.sidebar.radio("Go to Sub-Topic:", ["6.1 Concept: Polygon Theory", "6.2 Guide: LoadBuilder Setup"])
-    video_url = "https://www.youtube.com/watch?v=dQw4w9WgXcQ&t=565s" # Starts at 9m 25s
+# 2. MATCHING VIDEO EMBED CORRELATION LINKS
+# Linking the exact YouTube tutorials to the layout
+if "1. Convert KMZ" in selected_video:
+    sub_topics = ["1.1 Geographic Alignment (KMZ)", "1.2 ModelBuilder Import Engine"]
+    video_link = "https://www.youtube.com/watch?v=dQw4w9WgXcQ" # Video 1 URL Placeholder
+elif "2. Assign Design" in selected_video:
+    sub_topics = ["2.1 Velocity & Soil Cover Boundaries", "2.2 Pipe Capacity & Partly Full Ratios"]
+    video_link = "https://www.youtube.com/watch?v=dQw4w9WgXcQ" # Video 2 URL Placeholder
+elif "3. How to Put" in selected_video:
+    sub_topics = ["3.1 Unit Loads vs. Base Inflows", "3.2 Using the Sanitary Load Control Center"]
+    video_link = "https://www.youtube.com/watch?v=C5PZ0I_pFgE" # Video 3 URL
+elif "4. Insert Elevation" in selected_video:
+    sub_topics = ["4.1 Ground Interpolation via Trex", "4.2 Computation & Engine Selection"]
+    video_link = "https://www.youtube.com/watch?v=dQw4w9WgXcQ" # Video 4 URL Placeholder
+elif "5. Insert Peak" in selected_video:
+    sub_topics = ["5.1 Extreme Flow Multiplying Formulas", "5.2 Infiltration & Storm Overflows"]
+    video_link = "https://www.youtube.com/watch?v=dQw4w9WgXcQ" # Video 5 URL Placeholder
+elif "6. Calculate Sanitary" in selected_video:
+    sub_topics = ["6.1 Spatial Proportional Allocation Theory", "6.2 LoadBuilder Execution Wizard"]
+    video_link = "https://www.youtube.com/watch?v=dQw4w9WgXcQ" # Video 6 URL Placeholder
 
-st.markdown(f"### 📍 Current Lesson: {sub_topic}")
+# Sidebar selection for sub-topic divisions
+active_sub = st.sidebar.radio("Sub-Topic Breakdown:", sub_topics)
 
-# 2. TWO-COLUMN SPLIT CANVAS LAYOUT
-# Left Column = Instructions & Calculators | Right Column = Live Video Snippet
-col_left, col_right = st.columns([1.1, 1])
+# 3. INTERACTIVE LAYOUT DESIGN: DUAL CANVAS
+# Split space evenly: Left for deep software interactions, Right for Video streaming
+col_guide, col_video = st.columns([1.1, 1])
 
-with col_left:
-    st.subheader("📝 Step-by-Step Interactive Guide")
+with col_guide:
+    st.header(f"✏️ Learning Panel: {active_sub}")
     
-    # --- MODULE 1 CONTENT ---
-    if sub_topic == "1.1 Concept: KMZ vs DXF":
-        st.info("**Concept:** Google Earth (`.kmz`) stores geographic lines, but SewerGEMS needs vector scale data (`.dxf`) to construct a structural model[cite: 6].")
-        st.checkbox("1. Trace lines for conduits and points for manholes in Google Earth[cite: 4, 6].")
-        st.checkbox("2. Save your folder as a `.kmz` file[cite: 6].")
-        st.checkbox("3. Use a CAD converter to export it to a structural `.dxf` format[cite: 6].")
+    # --- VIDEO 1 DETAILED DIALOG STEP-BY-STEPS ---
+    if "1.1 Geographic" in active_sub:
+        st.markdown("#### **Converting CAD Alignment Boundaries**")
+        st.markdown("""
+        To properly establish the geometric coordinates of your utility pipelines, you must export vector layers.
+        1. Open Google Earth and trace your system alignment.
+        2. Right-click your network file hierarchy $\rightarrow$ **Save Place As (.kmz)**.
+        3. Convert the `.kmz` map file to a vector `.dxf` layout via Global Mapper or AutoCAD Map 3D.
+        """)
+        st.checkbox("Step 1 Complete: Scaled DXF file exported with correct UTM coordinate zoning.")
         
-    elif sub_topic == "1.2 Guide: Using ModelBuilder":
-        st.markdown("### **ModelBuilder Wizard Setup**")
-        st.checkbox("1. In SewerGEMS, click **Tools** $\rightarrow$ **ModelBuilder**[cite: 6].")
-        st.checkbox("2. Select **CAD Files (*.dxf)** as your source[cite: 6].")
-        st.checkbox("3. Map Line layers to **Conduits** and Point layers to **Manholes**[cite: 6].")
+    elif "1.2 ModelBuilder" in active_sub:
+        st.markdown("#### **Executing the Import Connection**")
+        st.markdown("""
+        * **Where to click:** Go to **Tools** $\rightarrow$ **ModelBuilder** $\rightarrow$ Click **New**.
+        * **Data Source:** Select `CAD Files (*.dxf)`. 
+        * **Field Mapping Matrix:** Map line geometries directly to **Conduits** and point coordinates to **Manholes**.
+        """)
+        st.checkbox("Click 'Build Model Now' to convert the CAD layout into an editable hydraulic schematic grid.")
 
-    # --- MODULE 2 CONTENT ---
-    elif sub_topic == "2.1 Concept: Velocity & Cover":
-        st.warning("**Design Guardrails:** Flow must be fast enough to clean the pipe but slow enough to avoid structural damage[cite: 6].")
-        st.write("* **Min Velocity:** $\ge 0.60 \text{ m/s}$ (prevents clogging)[cite: 6].")
-        st.write("* **Max Velocity:** $\le 3.00 \text{ m/s}$ (prevents concrete wear)[cite: 6].")
-        st.write("* **Min Cover Depth:** $\ge 1.00 \text{ m}$ (prevents pipe crushing)[cite: 6].")
+    # --- VIDEO 2 DETAILED DIALOG STEP-BY-STEPS ---
+    elif "2.1 Velocity" in active_sub:
+        st.markdown("#### **Setting Velocity & Soil Protection Safety Rules**")
+        st.markdown("""
+        * **Where to click:** Open **Components** $\rightarrow$ **Design Constraints** $\rightarrow$ Click **Gravity Pipe**.
+        * **Velocity Inputs:** Set Minimum Velocity to `0.60 m/s` and Maximum Velocity to `3.00 m/s`.
+        * **Cover Depth Inputs:** Set Minimum Soil Cover depth parameter to `1.00 m`.
+        """)
+        [Image of sewer pipe profile layout showing minimum soil cover depth and flow velocity vector]
+        st.info("These physical bounds force the software to generate safe pipe sizing metrics during design tests.")
+
+    elif "2.2 Pipe Capacity" in active_sub:
+        st.markdown("#### **Partly Full Constraints Calculation**")
+        st.markdown("""
+        * **Where to click:** Inside the **Design Constraints** window $\rightarrow$ click the **Partly Full** tab.
+        * Check the parameter box labeled *Specify Max (D/d)* and input `0.75`.
+        """)
         
-    elif sub_topic == "2.2 Guide: Capacity (D/d) & Slopes":
-        st.markdown("### **Partly Full Flow Constraints ($D/d$)**")
-        st.checkbox("1. Go to **Components** $\rightarrow$ **Design Constraints**[cite: 6].")
-        st.checkbox("2. Set maximum capacity ratio ($D/d$) between `0.75` and `0.80`[cite: 6].")
+        # Interactive Testing Simulator
+        st.markdown("---")
+        st.markdown("##### 🧪 Property Validation Field")
+        d = st.number_input("Measured Flow Water Depth 'd' (mm):", value=150)
+        D = st.number_input("Total Structural Pipe Diameter 'D' (mm):", value=200)
+        if D > 0:
+            current_ratio = d / D
+            st.metric("Computed Operating D/d Ratio:", f"{current_ratio:.2f}")
+            if current_ratio > 0.75:
+                st.error("Constraint Violated! Pipe exceeds 0.75 capacity threshold. Increase diameter in your model property editor.")
+            else:
+                st.success("Safe flow capacity margin.")
 
-    # --- MODULE 3 CONTENT ---
-    elif sub_topic == "3.1 Concept: Sanitary Load Types":
-        st.info("**Concept:** Assigning how much baseline sewage wastewater is entering each manhole node[cite: 7].")
-        pop = st.number_input("Tributary Population for Zone:", value=1200)
-        per_capita = st.number_input("Water Consumption (L/capita/day):", value=150)
-        ret_factor = st.slider("Wastewater Return Factor:", 0.70, 0.90, 0.85)
-        total_flow = (pop * per_capita * ret_factor) / 86400
-        st.metric("Calculated Target Flow for SewerGEMS:", f"{total_flow:.4f} L/s")
-
-    elif sub_topic == "3.2 Guide: Load Control Center":
-        st.markdown("### **Sanitary Load Control Center**")
-        st.checkbox("1. Click **Tools** $\rightarrow$ **Sanitary Load Control Center**[cite: 7].")
-        st.checkbox("2. Initialize rows for all nodes and input your calculated $L/s$ flows[cite: 7].")
-
-    # --- MODULE 4 CONTENT ---
-    elif sub_topic == "4.1 Concept: Elevation Basics":
-        st.error("🔴 **Simulation Troubleshooting:** If your network throws a fatal error, check for completely missing ground or pipe invert elevations[cite: 7].")
+    # --- VIDEO 3 DETAILED DIALOG STEP-BY-STEPS ---
+    elif "3.1 Unit Loads" in active_sub:
+        st.markdown("#### **Estimating Total Wastewater Contributions**")
+        st.markdown("Before opening the software data grid sheets, compute your target mass design inputs:")
         
-    elif sub_topic == "4.2 Guide: Using the Trex Tool":
-        st.markdown("### **Trex Terrain Extraction Wizard**")
-        st.checkbox("1. Click **Tools** $\rightarrow$ **Trex**[cite: 7].")
-        st.checkbox("2. Select your CAD Contour map or DEM file to extract elevations automatically[cite: 7].")
-
-    # --- MODULE 5 CONTENT ---
-    elif sub_topic == "5.1 Concept: Peak Modifiers":
-        st.info("**Safety Margins:** Extreme flows must handle usage surges and weather infiltration[cite: 7].")
+        pop = st.number_input("Tributary Population Count (Persons):", value=2000)
+        per_cap = st.number_input("Average Per Capita Water Consumption (L/day):", value=140)
+        factor = st.slider("Wastewater Generation Return Factor:", 0.70, 0.90, 0.80)
         
-    elif sub_topic == "5.2 Interactive: Flow Calculator":
-        st.latex(r"Q_{design} = (Q_{avg} \times PF) + Q_{inf}")
-        q_avg = st.number_input("Average Flow (L/s):", value=10.0)
-        pf = st.slider("Peak Factor Multiplier:", 1.5, 4.0, 3.0)
-        q_inf = st.number_input("Infiltration (L/s):", value=1.5)
-        st.success(f"**Total Design Capacity Target: {(q_avg * pf) + q_inf:.2f} L/s**")
+        calculated_flow = (pop * per_cap * factor) / 86400
+        st.markdown(f"**Target Flow Value to Use:** `{calculated_flow:.4f} L/s`")
 
-    # --- MODULE 6 CONTENT ---
-    elif sub_topic == "6.1 Concept: Polygon Theory":
-        st.markdown("### **Thiessen Polygons**")
-        st.write("Automatically creates geometric boundaries around manholes to divide load areas based on proximity[cite: 7].")
-        
-    elif sub_topic == "6.2 Guide: LoadBuilder Setup":
-        st.markdown("### **LoadBuilder Distribution Wizard**")
-        st.checkbox("1. Click **Tools** $\rightarrow$ **LoadBuilder**[cite: 7].")
-        st.checkbox("2. Choose **Proportional Distribution by Area** to assign spatial population loads[cite: 7].")
+    elif "3.2 Using the" in active_sub:
+        st.markdown("#### **Global Population Allocation Entry**")
+        st.markdown("""
+        * **Where to click:** Go to **Tools** $\rightarrow$ **Sanitary Load Control Center**.
+        * Click the black drop-down arrow next to the **Add** button $\rightarrow$ click **Initialize Loads for All Nodes**.
+        * This generates a global spreadsheet mapping columns for every manhole node in the collection network. Paste your calculated $L/s$ demand values into the active **Flow** column cells.
+        """)
 
-# Right Column handles the dynamic video player
-with col_right:
-    st.subheader("📺 Video Demonstration")
-    st.markdown("This video snippet will jump directly to the correct workflow timeline step:")
-    # The native Streamlit video element automatically processes the timestamp parameter (&t=...)
-    st.video(video_url)
+    # --- VIDEO 4 DETAILED DIALOG STEP-BY-STEPS ---
+    elif "4.1 Ground" in active_sub:
+        st.markdown("#### **Automating Elevation Extractions (Trex Tool)**")
+        st.markdown("""
+        * **Where to click:** Go to **Tools** $\rightarrow$ **Trex**.
+        * **Data Source File Type:** Select your CAD Contour map or Raster `.dem` file.
+        * Set your spatial profile elevation field parameter mapping to `Z` or `Elevation` and select `Meters` as the tracking unit.
+        """)
+        st.checkbox("Verify that all node elements successfully inherit ground elevations via the Trex assignment summary table.")
+
+    elif "4.2 Computation" in active_sub:
+        st.markdown("#### **Configuring and Running the Simulation Engine**")
+        st.markdown("""
+        * **Where to click:** Go to **Analysis** $\rightarrow$ **Calculation Options**. Double-click your active profile.
+        * For sanitary sewer collection analysis, set the **Hydraulic Engine Type Solver** to `GVF-Convex (SewerCAD Engine)`.
+        * Click the green **Compute** chevron icon on your main system ribbon tool set to execute routing algorithms.
+        """)
+
+    # --- VIDEO 5 DETAILED DIALOG STEP-BY-STEPS ---
+    elif "5.1 Extreme" in active_sub:
+        st.markdown("#### **Configuring Flow Peaking Equations**")
+        st.markdown("""
+        * **Where to click:** Navigate to **Components** $\rightarrow$ **Extreme Flows**.
+        * Right-click the folder directory item $\rightarrow$ Select **New** $\rightarrow$ **Extreme Flow Setup**.
+        * Change your tracking method option parameter from Table to **Equation** and choose the **Harmon Formula** standard.
+        """)
+        st.latex(r"PF = 1 + \frac{14}{4 + \sqrt{Population_{(thousands)}}}")
+
+    elif "5.2 Infiltration" in active_sub:
+        st.markdown("#### **Adding Groundwater Inflows & Allowances**")
+        st.markdown("""
+        * **Where to click:** Select your conduits $\rightarrow$ Navigate to your **Property Editor Dashboard**.
+        * Locate the section grouping named **Environmental/Infiltration Loading Options**.
+        * Input constant baseline numbers into the **Infiltration Flow Rate** data slots to represent groundwater pipe migration safety margins.
+        """)
+
+    # --- VIDEO 6 DETAILED DIALOG STEP-BY-STEPS ---
+    elif "6.1 Spatial" in active_sub:
+        st.markdown("#### **Thiessen Polygon Service Proximity Mapping**")
+        st.markdown("""
+        * **Concept:** When manhole loading configurations vary widely due to changing urban footprints, geometric polygons divide the service map.
+        * Any property area boundary fall line within a specific node's polygon territory sends its calculated residential capacity entirely into that single target manhole structure.
+        """)
+        [Image of Thiessen polygon network geometric layout showing service areas built around central manhole nodes]
+
+    elif "6.2 LoadBuilder" in active_sub:
+        st.markdown("#### **Executing the Spatial Flow Allocation Wizard**")
+        st.markdown("""
+        * **Where to click:** Navigate to **Tools** $\rightarrow$ **LoadBuilder** $\rightarrow$ Click **New**.
+        * **Method Type Directory Selection:** Choose **Area Load Data** $\rightarrow$ Select **Proportional Distribution by Area**.
+        * Set the **Node Layer** field menu value to your current model's *Manholes*. Set the **Service Area Boundary Layer** input to your prepared system shapefile zone. Click **Finish**.
+        """)
+
+# Right Column plays the exact synchronized video lesson snippet
+with col_video:
+    st.header("📺 Sync Video Demonstration")
+    st.markdown("Watch the corresponding software operation segment below:")
+    # The app renders the selected video target inside the canvas grid column
+    st.video(video_link)

@@ -119,4 +119,3 @@ for t in topics:
     status = "✅" if progress.get(t["video_id"]) else "⬜"
     mark = "⭐" if t["video_id"] in bookmarks else ""
     st.write(f"{status} {mark} {t['title']}")
-``
